@@ -29,10 +29,13 @@
 
 Want detailed guides? Check these:
 
+developer-guides/INITIA_MOVE_DEVELOPMENT_GUIDE.md
+
 ```suggestions
 developer-guides/vm-specific-tutorials/movevm/building-move-modules.md
 developer-guides/vm-specific-tutorials/movevm/setting-up.md
 developer-guides/vm-specific-tutorials/movevm/ibc-hooks.md
+
 ```
 
 Here is the link to intia docs https://docs.initia.xyz/developers/introduction
