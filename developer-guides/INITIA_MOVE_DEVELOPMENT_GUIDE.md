@@ -31,6 +31,8 @@ export PATH=$PATH:$HOME/go/bin
 
 ### 2. Create Development Account
 
+IMPORTANT: Always create new keys for each project.
+
 ```bash
 # Create new key
 initiad keys add mykey
@@ -63,6 +65,8 @@ initiad move new my_project  # Creates Move.toml and sources/
 ```
 
 ### 2. Configure Move.toml
+
+Do not change InitiaStdlib version.
 
 ```toml
 [package]
@@ -134,7 +138,7 @@ ls -la build/*/bytecode_modules/*.mv
 
 ```bash
 export RPC_URL=https://rpc.testnet.initia.xyz
-export CHAIN_ID=initiation-1  # Initia L1 testnet
+export CHAIN_ID=initiation-2  # Move rollup testnet (or initiation-1 for Initia L1)
 export GAS_PRICES=0.015uinit
 export PATH=$PATH:$HOME/go/bin
 ```
@@ -326,9 +330,12 @@ Same format as execute arguments.
 
 **Testnet:**
 - RPC: `https://rpc.testnet.initia.xyz`
-- Chain ID: `initiation-1`
+- Chain ID: `initiation-2` (Move rollup testnet, used by InterwovenKit TESTNET config)
+- Chain ID: `initiation-1` (Initia L1 testnet, alternative)
 - Gas Prices: `0.015uinit`
 - Faucet: https://v1.app.testnet.initia.xyz/faucet
+
+**Note**: Use `initiation-2` for Move rollup deployments. Use `initiation-1` for Initia L1 deployments.
 
 ## Common Errors & Solutions
 
@@ -406,6 +413,224 @@ public fun get_data(account: address): u64 acquires MyResource {
 - [ ] Environment variables set (RPC_URL, CHAIN_ID, GAS_PRICES)
 - [ ] Key exists in keyring (`~/.initia`)
 
+## Frontend Integration
+
+### 1. Install Dependencies
+
+```bash
+# In your web-app directory
+bun add @initia/interwovenkit-react wagmi viem @initia/initia.js cosmjs-types
+bun add -d vite-plugin-node-polyfills
+```
+
+### 2. Configure Vite
+
+Add Node.js polyfills to `vite.config.ts`:
+
+```ts
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
+
+export default defineConfig({
+  plugins: [
+    // ... other plugins
+    nodePolyfills({
+      globals: { Buffer: true, global: true, process: true },
+    }),
+  ],
+  define: {
+    global: 'globalThis',
+  },
+});
+```
+
+### 3. Setup InterwovenKit Provider
+
+Create `src/providers/interwovenkit-provider.tsx`:
+
+```tsx
+import { useEffect } from 'react';
+import { createConfig, http, WagmiProvider } from 'wagmi';
+import { mainnet } from 'wagmi/chains';
+import {
+  initiaPrivyWalletConnector,
+  injectStyles,
+  InterwovenKitProvider,
+  TESTNET,
+} from '@initia/interwovenkit-react';
+import InterwovenKitStyles from '@initia/interwovenkit-react/styles.js';
+
+const wagmiConfig = createConfig({
+  connectors: [initiaPrivyWalletConnector],
+  chains: [mainnet],
+  transports: { [mainnet.id]: http() },
+});
+
+export function InterwovenKitProviderWrapper({ children }) {
+  useEffect(() => {
+    injectStyles(InterwovenKitStyles);
+  }, []);
+
+  return (
+    <WagmiProvider config={wagmiConfig}>
+      <InterwovenKitProvider {...TESTNET}>{children}</InterwovenKitProvider>
+    </WagmiProvider>
+  );
+}
+```
+
+Wrap your app in `main.tsx`:
+
+```tsx
+import { InterwovenKitProviderWrapper } from './providers/interwovenkit-provider';
+
+// Wrap app with InterwovenKitProviderWrapper
+```
+
+### 4. Create Contract Service
+
+Create `src/lib/initia.ts`:
+
+```ts
+import { RESTClient } from '@initia/initia.js';
+
+// REST URL for queries (LCD endpoint)
+export const REST_URL = import.meta.env.VITE_REST_URL || 'https://rest.testnet.initia.xyz';
+// RPC URL for transactions is handled by InterwovenKit via chain registry
+export const MODULE_ADDRESS = import.meta.env.VITE_MODULE_ADDRESS || '0x...';
+
+export const restClient = new RESTClient(REST_URL, {
+  gasPrices: '0.015uinit',
+});
+```
+
+Create `src/lib/move-contract.ts`:
+
+```ts
+import { bcs, MsgExecute } from '@initia/initia.js';
+import { restClient, MODULE_ADDRESS } from './initia';
+
+// Query Move view function
+export async function queryGame(playerXAddr: string) {
+  const address = playerXAddr.startsWith('0x') ? playerXAddr : `0x${playerXAddr}`;
+  return await restClient.move.view(
+    address,
+    'tictactoe',
+    'view_game',
+    [],
+    [bcs.address().serialize(address).toBase64()],
+  );
+}
+
+// Create MsgExecute for transactions
+export function createGameMessage(sender: string, playerO: string): MsgExecute {
+  return new MsgExecute(
+    sender,
+    MODULE_ADDRESS,
+    'tictactoe',
+    'create_game',
+    [],
+    [bcs.address().serialize(playerO).toBase64()],
+  );
+}
+```
+
+### 5. Use in Components
+
+```tsx
+import { useInterwovenKit } from '@initia/interwovenkit-react';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { createGameMessage, queryGame } from '@/lib/move-contract';
+import type { EncodeObject } from '@cosmjs/proto-signing';
+
+function MyComponent() {
+  const { address, requestTxBlock, waitForTxConfirmation } = useInterwovenKit();
+
+  // Query
+  const { data: game } = useQuery({
+    queryKey: ['game', address],
+    queryFn: () => queryGame(address),
+  });
+
+  // Execute transaction
+  const createGame = useMutation({
+    mutationFn: async (playerO: string) => {
+      const msg = createGameMessage(address, playerO);
+      const encodeMsg: EncodeObject = {
+        typeUrl: '/initia.move.v1.MsgExecute',
+        value: msg.toProto(), // IMPORTANT: Must call toProto()!
+      };
+      const result = await requestTxBlock({ messages: [encodeMsg] });
+      await waitForTxConfirmation({ txHash: result.transactionHash, timeoutMs: 30000 });
+      return result.transactionHash;
+    },
+  });
+}
+```
+
+**Common Issues:**
+
+1. **"invalid uint32: undefined" error**: Ensure arguments are BCS-encoded as base64 strings, not raw values:
+   ```ts
+   // ✅ Correct
+   args: [bcs.address().serialize(address).toBase64()]
+   
+   // ❌ Wrong
+   args: [address] // Will fail!
+   ```
+
+2. **Transaction fails silently**: Always convert `MsgExecute` to proto format:
+   ```ts
+   // ✅ Correct
+   value: msg.toProto()
+   
+   // ❌ Wrong
+   value: msg // Will fail!
+   ```
+
+3. **Bech32 address encoding**: Convert bech32 addresses to hex before BCS encoding:
+   ```ts
+   import { fromBech32 } from '@cosmjs/encoding';
+   
+   function encodeAddress(address: string): string {
+     let hexAddress: string;
+     if (address.startsWith('0x')) {
+       hexAddress = address;
+     } else {
+       const decoded = fromBech32(address);
+       const hexBytes = Array.from(decoded.data)
+         .map((b) => b.toString(16).padStart(2, '0'))
+         .join('');
+       hexAddress = '0x' + hexBytes.padStart(64, '0');
+     }
+     return bcs.address().serialize(hexAddress).toBase64();
+   }
+   ```
+
+### 6. Environment Variables
+
+Create `.env`:
+
+```env
+# REST URL for queries (LCD endpoint)
+VITE_REST_URL=https://rest.testnet.initia.xyz
+# RPC URL is handled automatically by InterwovenKit via chain registry
+# initiation-2 = Move rollup testnet (default for TESTNET config)
+VITE_CHAIN_ID=initiation-2
+VITE_MODULE_ADDRESS=0xYOUR_MODULE_ADDRESS
+VITE_GAS_PRICES=0.015uinit
+```
+
+**Note**: InterwovenKit handles RPC URLs automatically through the chain registry. Transactions use the RPC endpoint configured in the registry for the chain ID. For queries, use the REST/LCD endpoint.
+
+### Key Patterns
+
+- **Wallet Connection**: Use `useInterwovenKit()` hook for `address`, `openConnect()`, `openWallet()`
+- **Queries**: Use `restClient.move.view()` with BCS-encoded arguments
+- **Transactions**: Create `MsgExecute`, convert to `EncodeObject` with `msg.toProto()`, use `requestTxBlock()`
+- **BCS Encoding**: Always use `.toBase64()` on serialized values: `bcs.address().serialize(addr).toBase64()`
+- **Type URLs**: Move messages use `/initia.move.v1.MsgExecute`
+- **Address Encoding**: Convert bech32 addresses to hex (32 bytes, zero-padded) before BCS encoding
+
 ## Quick Reference
 
 **Module Address Format:**
@@ -421,3 +646,9 @@ public fun get_data(account: address): u64 acquires MyResource {
 - `public entry fun`: Callable via transactions
 - `#[view] public fun`: Read-only queries
 - `fun`: Internal/private functions
+
+**Frontend:**
+- Wallet: `useInterwovenKit()` hook
+- Queries: `restClient.move.view()`
+- Transactions: `MsgExecute` → `msg.toProto()` → `EncodeObject` → `requestTxBlock()`
+- Arguments: Always BCS-encode and convert to base64 strings

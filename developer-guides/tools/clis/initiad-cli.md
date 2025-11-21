@@ -132,7 +132,7 @@ By default, initiad connects to the Initia mainnet. You can configure it to conn
 
   <Tab title="Testnet">
     ```bash
-    initiad config chain-id initiation-1
+    initiad config chain-id initiation-2
     initiad config node https://rpc.testnet.initia.xyz:443
     ```
   </Tab>

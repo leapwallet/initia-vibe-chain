@@ -1,0 +1,10 @@
+[package]
+name = "tictactoe"
+version = "0.0.0"
+
+[dependencies]
+InitiaStdlib = { git = "https://github.com/initia-labs/move-natives.git", subdir = "initia_stdlib", rev = "v1.0.0" }
+
+[addresses]
+std = "0x1"
+tictactoe = "0xA074BEBD5AF4F6D50750AD57D334BD980B23569D"
