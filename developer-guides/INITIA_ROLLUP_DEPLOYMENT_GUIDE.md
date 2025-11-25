@@ -525,12 +525,112 @@ initiad query move view <addr> <module> <func> --node http://localhost:26657
 - Challenger: `3001`
 - Relayer: `7010`
 
+## Registering Your Rollup in Initia Registry
+
+Once your rollup is live and public, register it in the Initia Registry to enable support on Bridge, Scan, and Wallet pages.
+
+### Prerequisites
+
+- Rollup must be live and publicly accessible
+- GitHub account for submitting pull request
+
+### Registration Steps
+
+**1. Prepare Required Files**
+
+Create two JSON files following the official schemas:
+
+**chain.json** - Critical rollup information:
+```json
+{
+  "chain_name": "myrollup",
+  "chain_id": "myrollup-1",
+  "pretty_name": "My Rollup",
+  "status": "live",
+  "network_type": "testnet",
+  "bech32_prefix": "init",
+  "apis": {
+    "rpc": [
+      {
+        "address": "https://rpc.myrollup.com"
+      }
+    ],
+    "rest": [
+      {
+        "address": "https://rest.myrollup.com"
+      }
+    ]
+  }
+}
+```
+
+Must follow [chain schema](https://github.com/initia-labs/initia-registry/blob/main/chain.schema.json).
+
+**assetlist.json** - Major rollup assets:
+```json
+{
+  "chain_name": "myrollup",
+  "assets": [
+    {
+      "denom": "umin",
+      "symbol": "MIN",
+      "decimals": 6,
+      "logo_URIs": {
+        "png": "https://example.com/logo.png"
+      }
+    }
+  ]
+}
+```
+
+Must follow [assetlist schema](https://github.com/initia-labs/initia-registry/blob/main/assetlist.schema.json).
+
+**2. Submit to Registry**
+
+Navigate to [Initia Registry repository](https://github.com/initia-labs/initia-registry):
+
+1. Fork the repository
+2. Navigate to the appropriate network directory (e.g., `testnet/` or `mainnet/`)
+3. Create a new folder with your rollup name (same as chain_name in chain.json)
+4. Add both `chain.json` and `assetlist.json` to the folder
+5. Create a pull request with your changes
+
+**3. Optional: Add Profile**
+
+You can submit your profile and rollup registration in the same PR. See [profile documentation](https://docs.initia.xyz/developers/developer-guides/integrating-initia-apps/registry/introduction) for details.
+
+### Verification
+
+After your PR is merged:
+
+1. **Bridge**: Your rollup appears on the Initia Bridge interface
+2. **Scan**: Your rollup is indexed by Initia Scan explorer
+3. **Wallet**: Your rollup can be added to supported wallets
+
+### Example Structure
+
+```
+initia-registry/
+└── testnet/
+    └── myrollup/
+        ├── chain.json
+        └── assetlist.json
+```
+
+### Resources
+
+- **[Initia Registry Repository](https://github.com/initia-labs/initia-registry)**
+- **[Chain Schema](https://github.com/initia-labs/initia-registry/blob/main/chain.schema.json)**
+- **[Assetlist Schema](https://github.com/initia-labs/initia-registry/blob/main/assetlist.schema.json)**
+- **[Registry Documentation](https://docs.initia.xyz/developers/developer-guides/integrating-initia-apps/registry/introduction)**
+
 ## Next Steps
 
 1. **Test Contract**: Verify all functions work on rollup
 2. **Configure Frontend**: Update to use rollup endpoints
 3. **Monitor Bots**: Ensure Executor, Challenger, Relayer stay healthy
-4. **Set Up Monitoring**: Implement alerting for production
-5. **Document Deployment**: Save all addresses, chain-id, configs
+4. **Register Rollup**: Submit to Initia Registry for ecosystem integration
+5. **Set Up Monitoring**: Implement alerting for production
+6. **Document Deployment**: Save all addresses, chain-id, configs
 
 For L1 deployment instead, see [INITIA_MOVE_DEVELOPMENT_GUIDE.md](./INITIA_MOVE_DEVELOPMENT_GUIDE.md).

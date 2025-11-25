@@ -30,7 +30,7 @@ Break down what you want into:
 
 ### Real Example
 
-Here's how to request a blockchain game (from [prompt-template.md](prompt-template.md)):
+Here's how to request a blockchain game (from [prompt-example.md](prompt-example.md)):
 
 ```
 Build a fully on-chain tic-tac-toe game smart contract on Initia:

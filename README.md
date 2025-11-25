@@ -2,6 +2,31 @@
 
 A starter template for building decentralized applications on the Initia blockchain. This template provides everything you need to get started with MoveVM smart contracts and a modern React frontend.
 
+## 📖 Documentation Overview
+
+This repository includes comprehensive documentation to help you build on Initia:
+
+- **[PROMPTING_GUIDE.md](./PROMPTING_GUIDE.md)** - Learn how to effectively use this template with AI coding assistants
+- **[prompt-example.md](./prompt-example.md)** - Example prompts for building on-chain applications
+- **[developer-guides/](./developer-guides/)** - Complete technical documentation:
+  - **[INITIA_MOVE_DEVELOPMENT_GUIDE.md](./developer-guides/INITIA_MOVE_DEVELOPMENT_GUIDE.md)** - Complete Move development guide
+  - **[INITIA_ROLLUP_DEPLOYMENT_GUIDE.md](./developer-guides/INITIA_ROLLUP_DEPLOYMENT_GUIDE.md)** - Deploy to custom rollups
+  - **[interwovenkit/](./developer-guides/interwovenkit/)** - Wallet integration guides
+  - **[tools/](./developer-guides/tools/)** - CLI and SDK documentation
+  - **[vm-specific-tutorials/](./developer-guides/vm-specific-tutorials/)** - MoveVM tutorials
+
+### How to Use the Documentation
+
+**For AI-Assisted Development:**
+1. Read [PROMPTING_GUIDE.md](./PROMPTING_GUIDE.md) to understand how to structure requests
+2. Reference [prompt-example.md](./prompt-example.md) for sample prompts
+3. Point your AI assistant to relevant files in `developer-guides/` for technical context
+
+**For Manual Development:**
+1. Start with [INITIA_MOVE_DEVELOPMENT_GUIDE.md](./developer-guides/INITIA_MOVE_DEVELOPMENT_GUIDE.md) for Move contracts
+2. Follow [INITIA_ROLLUP_DEPLOYMENT_GUIDE.md](./developer-guides/INITIA_ROLLUP_DEPLOYMENT_GUIDE.md) for rollup deployment
+3. Use [interwovenkit/](./developer-guides/interwovenkit/) guides for wallet integration
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -81,32 +106,43 @@ initia-vibe-chain/
 
 ## 📚 Next Steps
 
-### 1. Build Your Move Smart Contract
+### 1. Set Up Your Initia Rollup (Optional)
+
+If you want to deploy to your own custom rollup:
+
+- Follow [INITIA_ROLLUP_DEPLOYMENT_GUIDE.md](./developer-guides/INITIA_ROLLUP_DEPLOYMENT_GUIDE.md) to:
+  - Launch your own Initia rollup using Weave CLI
+  - Configure and fund your rollup infrastructure
+  - Deploy Move contracts to your custom chain
+  - Register your rollup in the Initia registry
+
+Or deploy directly to Initia testnet (L1) following the next steps.
+
+### 2. Build Your Move Smart Contract
 
 Follow the guides in `developer-guides/vm-specific-tutorials/movevm/` to:
 
 - Set up your Move development environment
 - Write your first Move module
-- Deploy to Initia testnet
+- Deploy to Initia testnet or your custom rollup
 
-### 2. Integrate with Your Frontend
+### 3. Integrate with Your Frontend
 
 - Update `VITE_MODULE_ADDRESS` in your `.env` file with your deployed module address
 - Use `@initia/initia.js` to interact with your smart contract
 - Connect wallets using InterwovenKit (see `developer-guides/interwovenkit/`)
 
-### 3. Customize Your Application
+### 4. Customize Your Application
 
 - Modify `web-app/src/pages/index.tsx` to build your UI
 - Add new components in `web-app/src/components/`
 - Configure routing in `web-app/src/router.tsx`
 
-## 📖 Documentation
+## 📖 Additional Resources
 
 - **[Initia Documentation](https://docs.initia.xyz)** - Official Initia docs
-- **[MoveVM Development Guide](./developer-guides/INITIA_MOVE_DEVELOPMENT_GUIDE.md)** - Complete Move development guide
-- **[InterwovenKit Integration](./developer-guides/interwovenkit/)** - Wallet integration guides
 - **[CLI Reference](./developer-guides/tools/clis/initiad-cli.md)** - Command-line tools
+- **[Initia Registry](https://docs.initia.xyz/developers/developer-guides/integrating-initia-apps/registry/introduction)** - Register your rollup for discoverability
 
 ## 🎯 Example Use Cases
 
