@@ -4,6 +4,24 @@ This guide walks you through building a complete dApp on Initia using AI coding 
 
 > **Note:** See [README.md](./README.md) for an overview of what this template provides.
 
+## Table of Contents
+
+- [What You'll Build](#what-youll-build)
+- [Prerequisites](#prerequisites)
+- [Step 0: Create and Fund Your Initia Account](#step-0-create-and-fund-your-initia-account)
+- [Step 1: Build Your Smart Contract](#step-1-build-your-smart-contract)
+- [Step 2: Install Frontend Dependencies](#step-2-install-frontend-dependencies)
+- [Step 3: Configure Frontend Build Tools](#step-3-configure-frontend-build-tools)
+- [Step 4: Setup Wallet Integration](#step-4-setup-wallet-integration)
+- [Step 5: Build Frontend UI and Connect to Contract](#step-5-build-frontend-ui-and-connect-to-contract)
+- [Step 6: Test Your Complete Application](#step-6-test-your-complete-application)
+- [Troubleshooting](#troubleshooting)
+  - [Common Frontend Issues](#common-frontend-issues)
+  - [General Tips](#general-tips)
+- [Next Steps](#next-steps)
+  - [Extend Your Skills](#extend-your-skills)
+  - [Customize Your App](#customize-your-app)
+
 ## What You'll Build
 
 You'll build a fully functional tic-tac-toe game on Initia:
@@ -664,8 +682,6 @@ Now that you've built your first complete application, explore these template re
 |------|----------|-------------------|
 | Better prompts | [`PROMPTING_GUIDE.md`](./PROMPTING_GUIDE.md) | Advanced prompting techniques |
 | More examples | [`prompt-example.md`](./prompt-example.md) | Different app types |
-| Deep Move knowledge | [`INITIA_MOVE_DEVELOPMENT_GUIDE.md`](./developer-guides/INITIA_MOVE_DEVELOPMENT_GUIDE.md) | Advanced patterns |
-| Deploy your own chain | [`INITIA_ROLLUP_DEPLOYMENT_GUIDE.md`](./developer-guides/INITIA_ROLLUP_DEPLOYMENT_GUIDE.md) | Custom rollup deployment |
 | Advanced wallet features | [`developer-guides/interwovenkit/`](./developer-guides/interwovenkit/) | Multi-chain, IBC transfers |
 | IBC Hooks | [`ibc-hooks.md`](./developer-guides/vm-specific-tutorials/movevm/ibc-hooks.md) | Cross-chain messaging |
 
