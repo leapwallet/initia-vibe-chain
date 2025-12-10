@@ -29,6 +29,8 @@ which initiad  # Should show /Users/$USER/go/bin/initiad
 export PATH=$PATH:$HOME/go/bin
 ```
 
+For more installation options, see the [initiad CLI documentation](https://docs.initia.xyz/developers/developer-guides/tools/clis/initiad-cli/introduction).
+
 ### 2. Create Development Account
 
 IMPORTANT: Always create new keys for each project.

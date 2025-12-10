@@ -295,3 +295,8 @@ Follow these steps to set up InterwovenKit in your application:
     ```
   </Step>
 </Steps>
+
+
+---
+
+> To find navigation and other pages in this documentation, fetch the llms.txt file at: https://docs.initia.xyz/llms.txt

@@ -61,7 +61,7 @@ This repository includes comprehensive documentation to help you build on Initia
 
 - [Node.js](https://node.js.org/) (v22 or higher)
 - [pnpm](https://pnpm.io/) package manager
-- [minitiad](https://docs.initia.xyz/developers/developer-guides/tools/clis/initiad-cli) CLI tool for Move development
+- [initiad](https://docs.initia.xyz/developers/developer-guides/tools/clis/initiad-cli/introduction) CLI tool for Move development
 - An Initia testnet account (get testnet tokens from the [faucet](https://docs.initia.xyz/developers/introduction))
 
 ### 1. Clone and Install
