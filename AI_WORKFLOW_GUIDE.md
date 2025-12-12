@@ -69,7 +69,7 @@ Use these commands:
 - initiad keys show mykey --address
 - initiad query bank balances $(initiad keys show mykey --address) --node https://rpc.testnet.initia.xyz
 
-Faucet URL: https://faucet.testnet.initia.xyz/
+Faucet URL: https://app.testnet.initia.xyz/faucet
 
 Reference documentation:
 - developer-guides/tools/clis/initiad-cli.md (detailed CLI command reference and account management)
@@ -143,16 +143,27 @@ Technical Details:
 - Board positions: 0-8 (0=top-left, 4=center, 8=bottom-right)
 
 Development Steps:
-1. Initialize Move project: initiad move init tictactoe
+1. Initialize Move project: initiad move new tictactoe
 2. Create the Move module file in sources/tictactoe.move
-3. Configure Move.toml with your deployer address (hex format: 0x...)
+3. Configure Move.toml with your module address (hex format: 0x...)
 4. Build: initiad move build
 5. Deploy: initiad move deploy --path . --upgrade-policy COMPATIBLE --from <your-key-name> --gas auto --gas-adjustment 1.5 --gas-prices 0.015uinit --node https://rpc.testnet.initia.xyz --chain-id initiation-2 -y
+
+IMPORTANT: After deployment, get your module address (deployer account hex format):
+   - Run: initiad keys parse $(initiad keys show <your-key-name> --address)
+   - Look for the "bytes" field in the output (e.g., bytes: 55037BEEC8E307FA9D48C2D7121E170BE9517C14)
+   - Add "0x" prefix to the bytes value: 0x55037BEEC8E307FA9D48C2D7121E170BE9517C14
+   - Display it clearly: "Your module address is: 0x55037beec8e307fa9d48c2d7121e170be9517c14"
+   - Save this hex address - use it for VITE_MODULE_ADDRESS in the frontend
+   - Note: The frontend uses initia.js SDK methods that take this address and the module name ("tictactoe") as separate parameters
 
 After deployment, create two test player accounts (required for proper testing):
 1. Create player1 key: initiad keys add player1
 2. Create player2 key: initiad keys add player2
-3. Fund both accounts from faucet: https://faucet.testnet.initia.xyz/
+3. IMPORTANT: Fund both accounts from faucet https://app.testnet.initia.xyz/faucet
+   - These accounts need testnet tokens to pay for gas when signing transactions (accept_game, make_move, cancel_game)
+   - Without funding, player accounts cannot sign transactions
+   - Verify funding: initiad query bank balances $(initiad keys show player1 --address) --node https://rpc.testnet.initia.xyz
 4. Get hex addresses: initiad keys parse $(initiad keys show player1 --address) and same for player2
 
 Then test the contract end-to-end by playing a complete game:
@@ -177,10 +188,11 @@ Initia docs: https://docs.initia.xyz/developers/introduction
 1. Your AI assistant will generate the Move smart contract code
 2. Review the generated code and ensure it follows Initia Move patterns
 3. Save the contract file (typically `sources/tictactoe.move`)
-4. Configure `Move.toml` with your deployer address (use hex format: `0x...`)
+4. Configure `Move.toml` with your module address (use hex format: `0x...`)
 5. Build: `initiad move build` - **Verify:** Build succeeds and `build/` directory created
 6. Deploy: `initiad move deploy --path . --upgrade-policy COMPATIBLE --from <your-key-name> --gas auto --gas-adjustment 1.5 --gas-prices 0.015uinit --node https://rpc.testnet.initia.xyz --chain-id initiation-2 -y`
-7. **Save your deployed module address** (your deployer's hex address) - you'll need it for the frontend
+7. **IMPORTANT:** The AI will query and display your module address (hex format) using: `initiad keys parse $(initiad keys show <your-key-name> --address)` - Look for the "bytes" field in the output and add "0x" prefix
+8. **Save this hex address** (e.g., `0x55037beec8e307fa9d48c2d7121e170be9517c14`) - you'll use this for `VITE_MODULE_ADDRESS` in the frontend (initia.js SDK methods take this address and module name as separate parameters)
 
 ### Verify Step 1
 
@@ -203,7 +215,7 @@ Copy and paste this prompt into your AI coding assistant:
 ```
 Install the required frontend dependencies for building a React frontend that connects to an Initia Move smart contract.
 
-Context from Step 1: You should have a deployed Move smart contract with a module address (your deployer's hex address). You'll need this address later for the VITE_MODULE_ADDRESS environment variable.
+Context from Step 1: You should have a deployed Move smart contract with a module address (your deployer's hex address, e.g., `0x55037beec8e307fa9d48c2d7121e170be9517c14`). You'll need this address later for the VITE_MODULE_ADDRESS environment variable.
 
 Task: Update package.json with the versions specified below and install the packages.
 
@@ -277,7 +289,7 @@ Copy and paste this prompt into your AI coding assistant:
 ```
 Configure the frontend build tools for an Initia dApp frontend.
 
-Context from Step 1: You have a deployed Move smart contract with a module address (your deployer's hex address). You'll need this for VITE_MODULE_ADDRESS.
+Context from Step 1: You have a deployed Move smart contract with a module address (your deployer's hex address, e.g., `0x55037beec8e307fa9d48c2d7121e170be9517c14`). You'll need this for VITE_MODULE_ADDRESS.
 Context from Step 2: All frontend dependencies are installed with exact versions.
 
 Tasks:
@@ -361,7 +373,7 @@ Steps:
 
 Setup InterwovenKit provider to enable wallet connection and transaction signing in your frontend.
 
-> **Context from Step 1:** You should have a deployed Move smart contract with a module address. The contract should have functions: `create_game`, `accept_game`, `reject_game`, `cancel_game`, `make_move`, `view_game`, `game_exists`, and `get_game_as_player_o`.
+> **Context from Step 1:** You should have a deployed Move smart contract with a module address (your deployer's hex address, e.g., `0x55037beec8e307fa9d48c2d7121e170be9517c14`). The contract should have functions: `create_game`, `accept_game`, `reject_game`, `cancel_game`, `make_move`, `view_game`, `game_exists`, and `get_game_as_player_o`.
 > **Context from Step 3:** You should have `vite.config.ts` configured and `.env` file set up with your module address.
 
 > **Docs:** See [INITIA_MOVE_DEVELOPMENT_GUIDE.md#3-setup-interwovenkit-provider](./developer-guides/INITIA_MOVE_DEVELOPMENT_GUIDE.md#3-setup-interwovenkit-provider) for step-by-step provider setup, [interwovenkit-provider.md](./developer-guides/interwovenkit/references/interwovenkit-provider.md) for provider configuration details, and [useinterwovenkit.md](./developer-guides/interwovenkit/references/useinterwovenkit.md) for hook usage and account information.
@@ -373,7 +385,7 @@ Copy and paste this prompt into your AI coding assistant:
 ```
 Setup InterwovenKit wallet integration for an Initia dApp frontend.
 
-Context from Step 1: You have a deployed Move smart contract with module address configured in VITE_MODULE_ADDRESS.
+Context from Step 1: You have a deployed Move smart contract with a module address (your deployer's hex address, e.g., `0x55037beec8e307fa9d48c2d7121e170be9517c14`) configured in VITE_MODULE_ADDRESS.
 Context from Step 3: vite.config.ts and .env file are configured.
 
 Task: Create the InterwovenKit provider wrapper, integrate it into the app, and add a wallet connection component.
@@ -470,7 +482,7 @@ Copy and paste this prompt into your AI coding assistant:
 ```
 Build a React frontend interface for the tic-tac-toe game smart contract deployed on Initia.
 
-Context from Step 1: You have a deployed Move smart contract with a module address (your deployer's hex address). The contract has functions: create_game, accept_game, reject_game, cancel_game, make_move, view_game, game_exists, and get_game_as_player_o. The module address is configured in VITE_MODULE_ADDRESS.
+Context from Step 1: You have a deployed Move smart contract with a module address (your deployer's hex address, e.g., `0x55037beec8e307fa9d48c2d7121e170be9517c14`). The contract has functions: create_game, accept_game, reject_game, cancel_game, make_move, view_game, game_exists, and get_game_as_player_o. The module address is configured in VITE_MODULE_ADDRESS.
 Context from Step 4: InterwovenKit provider is setup and wallet integration is configured.
 
 Core Requirements:

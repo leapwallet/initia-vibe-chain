@@ -1,6 +1,11 @@
 # Initia Vibe Chain - Development Template
 
-A starter template for building decentralized applications on the Initia blockchain. This template provides everything you need to get started with MoveVM smart contracts and a modern React frontend. It's designed to work seamlessly with AI coding assistants, but can also be used for traditional development workflows.
+A starter template for building Initia dApps with Move smart contracts and React frontend, optimized for AI-assisted development.
+
+## ⚡ TLDR
+
+> This template provides a React frontend alongside comprehensive documentation in [developer-guides](./developer-guides/) for Initia development including Move smart contracts, wallet integration, and deployment workflows. Start with [Quick Start](#quick-start) to get your environment running in minutes, then choose your path: follow the [AI Workflow Guide](#-build-a-demo-app-with-ai) for a hands-on tic-tac-toe tutorial with ready-made prompts, or explore the [Documentation Overview](#documentation-overview) to dive into the complete development guides. Once you've built your application, you can deploy to Initia testnet or launch your own custom rollup following the deployment guides.
+
 
 ## 📑 Contents
 
