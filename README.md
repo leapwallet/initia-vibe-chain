@@ -4,7 +4,20 @@ A starter template for building Initia dApps with Move smart contracts and React
 
 ## ⚡ TLDR
 
-> This template provides a React frontend alongside comprehensive documentation in [developer-guides](./developer-guides/) for Initia development including Move smart contracts, wallet integration, and deployment workflows. Start with [Quick Start](#quick-start) to get your environment running in minutes, then choose your path: follow the [AI Workflow Guide](#-build-a-demo-app-with-ai) for a hands-on tic-tac-toe tutorial with ready-made prompts, or explore the [Documentation Overview](#documentation-overview) to dive into the complete development guides. Once you've built your application, you can deploy to Initia testnet or launch your own custom rollup following the deployment guides.
+- **[Quick Start](#quick-start)** - Run the React frontend locally.
+  *For all developers. Use this first.*
+
+- **[AI Workflow Guide](./AI_WORKFLOW_GUIDE.md)** - Hands-on tic-tac-toe dApp using AI prompts.
+  *For developers new to Initia or AI workflows. Use this after setup.*
+
+- **[Documentation Overview](#documentation-overview)** - Complete Initia dev docs (Move, wallets, deployments).
+  *For developers building real features. Use as a reference.*
+
+- **[Developer Guides](./developer-guides/)** - Deep dives into MoveVM, InterwovenKit, and deployment.
+  *For production or advanced use cases.*
+
+- **[Deployment Guides](./developer-guides/INITIA_MOVE_DEVELOPMENT_GUIDE.md)** - Deploy to testnet or [launch a custom rollup](./developer-guides/INITIA_ROLLUP_DEPLOYMENT_GUIDE.md).
+  *Use when your app is ready to ship.*
 
 
 ## 📑 Contents
